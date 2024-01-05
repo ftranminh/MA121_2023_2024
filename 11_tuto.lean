@@ -1,6 +1,7 @@
-import Mathlib.Data.Nat.Basic   -- librairie à importer pour utiliser les entiers naturels (ℕ)
-import Mathlib.Data.Int.Basic   -- librairie à importer pour utiliser les entiers (ℤ)
-import Mathlib.Data.Real.Basic   -- librairie à importer pour utiliser les réels (ℝ)
+import Esisar.Basic
+--import Mathlib.Data.Nat.Basic   -- librairie à importer pour utiliser les entiers naturels (ℕ)
+--import Mathlib.Data.Int.Basic   -- librairie à importer pour utiliser les entiers (ℤ)
+--import Mathlib.Data.Real.Basic   -- librairie à importer pour utiliser les réels (ℝ)
 
 
 
@@ -9,6 +10,30 @@ import Mathlib.Data.Real.Basic   -- librairie à importer pour utiliser les rée
 
 -- Ou vous pouvez installer sur votre machine VS Code et l'extension Lean4 en suivant ces instructions :
 -- https://leanprover.github.io/lean4/doc/quickstart.html
+-- https://leanprover-community.github.io/install/project.html
+
+-----------------------
+-- 11_tuto.lean
+-- Nouvelles notions
+-----------------------
+
+--  Exemple 1 -----------------------
+--    connecteur logique OU (∨) : élimination
+
+--  Exemple 2 -----------------------
+--    connecteur logique OU (∨) : introduction
+
+--  Exemple 3 -----------------------
+--    réutilisation des notions précédentes
+
+--  Exemple 4 -----------------------
+--    L'équivalence  ↔  :  introduction de ↔ 
+--    Ecrire un lemme
+
+--  Exemple 5 -----------------------
+--    Elimination de ↔ 
+
+
 
 
 ------------------------------------------------------------------
@@ -229,17 +254,20 @@ example : ∀ P :Prop, ∀ Q : Prop, P ∨ Q ↔ Q ∨ P :=
 example :  ∀ x:ℝ , x^2+x-6 = 0 ↔ x=2 ∨ x=-3 := 
    sorry
 
--- Exercice 4.3
-example :  ∀ x:ℚ  , 3*a+1 ≤ 7 ↔ a ≤ 2 := 
+-- Exercice 4.4
+example :  ∀ a:ℚ  , 3*a+1 ≤ 7 ↔ a ≤ 2 := 
    sorry
 
--- Exercice 4.4
+-- Exercice 4.5
 example :  ∀ a:ℤ , a^2-5*a+5 ≤ -1 ↔ a = 2 ∨ a=3 := 
    sorry
 
--- Exercice 4.4
+-- Exercice 4.6
 example :  ∀ a:ℝ,∀ b:ℝ, ∀ x:ℝ, x^2 -(a+b)*x+a*b = 0 ↔  x = a ∨ x = b := 
    sorry
+
+-- Exercice 4.7
+example :  ∀ x:ℝ , (x-3)^2 = 2 ↔ x=3-√2 ∨ x=3+√2  := sorry
 
 ------------------------------------------------------------------
 --- Exemple 5
@@ -253,7 +281,7 @@ example :  ∀ a:ℝ,∀ b:ℝ, ∀ x:ℝ, x^2 -(a+b)*x+a*b = 0 ↔  x = a ∨ x
 
 #check mul_eq_zero  -- ce lemme donne une équivalence
 example (x:ℝ) (h: (x-1)*(x-2)=0) : x-1=0 ∨ x-2=0 := mul_eq_zero.mp h  
-example (u v:ℝ ) (h:v≠ 0) : v*u/v = u := by library_search  -- ≠ s'obtient avec \ne
+example (u v:ℝ ) (h:v≠ 0) : v*u/v = u := by exact?  -- ≠ s'obtient avec \ne
 
 
 -- donnons ici la résolution de l'équation du 1er degré dans ℝ :
@@ -322,7 +350,7 @@ example : ∀x:ℝ ,  sorry → -4+x = 0 := sorry
 
 
 -- Exercice 5.3
--- Réécrivez l'exercice 4.4 pour a,b,x dans ℤ, 
+-- Réécrivez l'exercice 4.5 pour a,b,x dans ℤ, 
 -- faites en un lemme, nommé, et utilisez le pour prouver :
 def pair (n:ℤ) : Prop := ∃ k:ℤ, n=2*k
 example : ∀ n:ℤ,  n^2-10*n+24=0 → pair n := sorry 

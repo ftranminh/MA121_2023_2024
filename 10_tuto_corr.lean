@@ -73,7 +73,7 @@ example : ∀ x:ℝ, 3*x+4=2 → x=-2/3     -- énoncé à démontrer
                -- le mot 'soit' se note λ 
   -- λ : taper \lambda
   -- ↦ : taper \mapsto
-    λ  h:3*x+4=2 ↦  -- pour prouver P → Q  , on suppose P et on montre Q. Ceci s'appelle l'introduction de → 
+    λ h:3*x+4=2 ↦  -- pour prouver P → Q  , on suppose P et on montre Q. Ceci s'appelle l'introduction de → 
                 -- le mot 'supposons' se note encore λ 
                 -- l'hypothèse 3*x+4=2 est nommée ; ici on a choisi de la nommer h
       calc
@@ -103,15 +103,60 @@ example : ∀ x:ℝ, 3*x+4=2 → x=-2/3     -- énoncé à démontrer
 
 -- Exercice 1.1
 example : ∀ x:ℝ, 2*x+11=6 → x = -5/2 := 
-  sorry                -- à faire :remplacez le sorry par la preuve
+  λ x:ℝ ↦ 
+    λ h:2*x+11=6 ↦ 
+      calc
+        x = (2*x+11-11)/2 := by ring_nf
+        _ = (6  -11)/2    := by rw[h]
+        _ = -5/2          := by norm_num
+
+example : ∀ x:ℝ, 2*x+11=6 → x = -5/2 := 
+  soit x:ℝ ,                       -- des macros 'maison' permettent d'écrire soit et supposons
+    supposons h:2*x+11=6 ,         -- à la place de λ 
+      calc
+        x = (2*x+11-11)/2 := by ring_nf
+        _ = (6  -11)/2    := by rw[h]
+        _ = -5/2          := by norm_num
+
+
 
 -- Exercice 1.2
 example  : ∀ c:ℚ,  4*c+1 =3*c-2 →  c = -3 :=
-  sorry
+  λ  c:ℚ ↦ 
+    λ  h:  4*c+1 =3*c-2 ↦ 
+      calc
+        c =  (4*c+1)-(3*c-2)  - 3  := by ring_nf
+        _ =  (3*c-2)-(3*c-2)  - 3 := by rw[h]
+        _ = -3                    := by norm_num
 
+example  : ∀ c:ℚ,  4*c+1 =3*c-2 →  c = -3 :=
+  soit c:ℚ,
+    supposons h:  4*c+1 =3*c-2,
+      calc
+        c =  (4*c+1)-(3*c-2)  - 3 := by ring_nf
+        _ =  (3*c-2)-(3*c-2)  - 3 := by rw[h]
+        _ = -3                    := by norm_num
 
 -- Exercice 1.3
-example : ∀ a b :ℝ ,(a ≤ b) → (∀ x:ℝ,  x ≥ b → x ≥ a ) := sorry
+example : ∀ a b :ℝ ,(a ≤ b) → (∀ x:ℝ,  x ≥ b → x ≥ a ) :=
+  λ a b :ℝ ↦ 
+    λ h : a ≤ b ↦    
+      λ x : ℝ ↦
+        λ hxb : x ≥ b ↦ 
+          calc 
+            x ≥ b := hxb
+            _ ≥ a := h
+
+
+example : ∀ a b :ℝ ,(a ≤ b) → (∀ x:ℝ,  x ≥ b → x ≥ a ) := 
+  soit a :ℝ,
+  soit b :ℝ,
+    supposons h : a ≤ b,
+      soit x : ℝ,
+        supposons hxb : x ≥ b,
+          calc 
+            x ≥ b := hxb
+            _ ≥ a := h
 
 
 
@@ -137,26 +182,113 @@ example : ∀ (P Q : Prop), P ∧ Q → Q ∧ P
 
 
 -- Exercice 2.1
-example : ∀ (P : Prop), P → P ∧ P := sorry 
+example : ∀ (P : Prop), P → P ∧ P := 
+  λ P : Prop ↦
+    λ h:P ↦
+      And.intro (h:P) (h:P)    
+
+example : ∀ (P : Prop), P → P ∧ P := 
+  soit P : Prop,
+    supposons h:P,
+      And.intro (h:P) (h:P)    
 
 -- Exercice 2.2
-example : ∀ (P Q : Prop), P ∧ Q → P := sorry 
+example : ∀ (P Q : Prop), P ∧ Q → P :=
+  λ P Q : Prop ↦ 
+    λ h: P ∧ Q ↦ 
+      (h.left:P) 
+
+example : ∀ (P Q : Prop), P ∧ Q → P :=
+  soit P : Prop,
+    soit Q : Prop,
+      supposons h: P ∧ Q,
+        (h.left:P) 
 
 -- Exercice 2.3
-example : ∀ (P Q : Prop), P ∧ Q → Q := sorry 
+example : ∀ (P Q : Prop), P ∧ Q → Q :=
+  λ P Q : Prop ↦ 
+    λ h: P ∧ Q ↦ 
+      (h.right:Q) 
+
+example : ∀ (P Q : Prop), P ∧ Q → Q :=
+  soit P : Prop,
+    soit Q : Prop,
+      supposons h: P ∧ Q,
+        (h.right:Q) 
 
 -- Exercice 2.4
-example : ∀ (P Q R: Prop), (P ∧ Q) ∧ R → P ∧ (Q ∧ R) := sorry 
+example : ∀ (P Q R: Prop), (P ∧ Q) ∧ R → P ∧ (Q ∧ R) := 
+  λ P Q R : Prop ↦ 
+    λ h : (P∧Q)∧ R ↦
+      And.intro
+        (h.left.left : P)
+        (
+          And.intro
+            (h.left.right: Q)
+            (h.right:      R)
+        )  
+
+example : ∀ (P Q R: Prop), (P ∧ Q) ∧ R → P ∧ (Q ∧ R) := 
+  soit P : Prop,
+    soit Q : Prop,
+      soit R : Prop,
+        supposons h : (P∧Q)∧ R,
+          And.intro
+            (h.left.left : P)
+            (
+              And.intro
+                (h.left.right: Q)
+                (h.right:      R)
+            )  
 
 -- Exercice 2.5
-example : ∀ (P Q R: Prop), (P → Q) ∧ (Q → R) → (P → R) := sorry 
+example : ∀ (P Q R: Prop), (P → Q) ∧ (Q → R) → (P → R) := 
+  λ P Q R : Prop ↦ 
+    λ h : (P → Q) ∧ (Q → R) ↦
+      λ hP:P ↦ 
+        (h.right (h.left  hP : Q) : R)
+
+example : ∀ (P Q R: Prop), (P → Q) ∧ (Q → R) → (P → R) := 
+  λ P Q R : Prop ↦ 
+    λ h : (P → Q) ∧ (Q → R) ↦
+      λ hP:P ↦ 
+        have hQ : Q := h.left  hP
+        have hR : R := h.right hQ
+        hR
+
+example : ∀ (P Q R: Prop), (P → Q) ∧ (Q → R) → (P → R) := 
+  soit P : Prop,
+    soit Q : Prop,
+      soit R : Prop,
+        supposons h : (P → Q) ∧ (Q → R),
+          supposons hP:P,
+            have hQ : Q := h.left  hP
+            have hR : R := h.right hQ
+            hR
 
 -- Exercice 2.6
 -- Cet exercice est le meme que le précédent, sauf que l'assertion
 -- (a ∧ b) → c   a été écrite  (a → b → c)   ce qui signifie : (a → ( b → c ))
 -- au lie de  "si (a et b) alors c"    on a écrit : "si a alors (si b alors c)"
 -- je vous laisse vous convaincre que cela signifie la meme chose (vous pouvez essayer de le prouver)
-example : ∀ (P Q R: Prop), (P → Q) → (Q → R) → (P → R) := sorry 
+example : ∀ (P Q R: Prop), (P → Q) → (Q → R) → (P → R) :=
+  λ P Q R : Prop ↦ 
+    λ hPQ : P → Q ↦
+      λ hQR : Q → R ↦
+        λ hP:P ↦ 
+          (hQR (hPQ  hP : Q) : R)
+
+example : ∀ (P Q R: Prop), (P → Q) → (Q → R) → (P → R) :=
+  soit P : Prop,
+    soit Q : Prop,
+      soit R : Prop,
+        supposons hPQ : P → Q ,
+          supposons hQR : Q → R ,
+            supposons hP:P,
+              have hQ : Q := hPQ  hP
+              have hR : R := hQR  hQ
+              hR
+
 
 
 
@@ -187,8 +319,20 @@ example : impair 7 :=
 -- Exercice 3.1
 
 -- Donnez la définition de pair et prouvez que -10 est pair
-def pair (n:ℤ) : Prop := sorry
-example : pair (-10) := sorry
+
+def pair (n:ℤ) : Prop := ∃ k:ℤ, n=2*k
+
+example : pair (-10) := 
+  Exists.intro (-5)
+  (
+    calc (-10:ℤ) = 2*(-5) := by norm_num
+  )
+
+example : pair (-10) := 
+  Exists.intro (-5)
+  (
+    by norm_num :  (-10:ℤ) = 2*(-5)
+  )
 
 
 
@@ -203,7 +347,6 @@ example : pair (-10) := sorry
 -- La bibliothèque Mathlib comporte une énorme collection de théorèmes.
 -- Si on veut prouver que x < x+1 pour un réel x, on peut interroger la bibliothèque :
 example (x:ℝ) : x < x+1 := by exact?
-
 -- En déplaçant le curseur sur 'exact?', la vue Lean InfoView affiche :
 -- Try this: exact lt_add_one x     -- on va oublier le 'exact'
 -- lt_add_one est un de ces nombreux théorèmes. On peut afficher son énoncé :
@@ -226,8 +369,16 @@ example : ∀ x:ℝ, ∃ y:ℝ , y>x :=
         )
 
 -- Exercice 4.1
+example (x:ℝ) : x-1 < x := by exact?
+#check sub_one_lt
 example : ∀ u:ℝ, ∃ t:ℝ , t + 1 < u  := 
-  sorry
+  λ u:ℝ ↦ 
+      Exists.intro (u-2)
+        (
+          calc 
+            (u-2)+1 = u-1  := by ring
+            _        < u   := sub_one_lt u
+        )
 
 
 ------------------------------------------------------------------
@@ -260,7 +411,37 @@ example : ∀n:ℤ,  (∃k:ℤ, n = 4*k+3) → (impair n) :=
 -- Exercice 5.1
 -- Montrez que si n s'écrit 6k alors n est pair
 example : ∀n:ℤ,  (∃k:ℤ, n = 6*k) → (pair n) :=
-  sorry
+  λ n:ℤ ↦
+    λ h1:(∃k:ℤ, n = 6*k) ↦
+      Exists.elim h1 
+      (
+        λ (k:ℤ)  (h2:n=6*k) ↦ 
+          Exists.intro (3*k)
+          (
+            calc
+              n = 6*k     := h2
+              _ = 2*(3*k) := by ring_nf
+          )
+      )
+
+example : ∀n:ℤ,  (∃k:ℤ, n = 6*k) → (pair n) :=
+  λ  n:ℤ ↦ 
+    λ  h1:(∃k:ℤ, n = 6*k) ↦ 
+      Exists.elim h1 
+      (
+        λ  k:ℤ ↦ 
+          supposons h2:(n=6*k),
+          (
+              Exists.intro (3*k)
+              (
+                calc
+                  n = 6*k     := h2
+                  _ = 2*(3*k) := by ring_nf
+              )
+            : pair n
+          )
+      )
+
 
 
 ------------------------------------------------------------------
@@ -269,21 +450,34 @@ example : ∀n:ℤ,  (∃k:ℤ, n = 6*k) → (pair n) :=
 -- Nouvelles notions
 --   quantificateur ∀ : élimination
 
-  example : ∀ a:ℝ, (∀x:ℝ,a ≤ x^2 -2*x) →  a ≤ -1 := 
-    λ a:ℝ ↦                       -- introduction de ∀
-      λ h:  (∀x:ℝ,a ≤ x^2 -2*x) ↦ -- introduction de → 
-        calc                   -- si h commence par ∀x...
-                               -- alors la l'assertion qui suit (a ≤ x^2 -2*x) est vraie pour toute valeur de x,
-                               -- en particulier pour x=1.
-                               -- Pour obtienir une preuve de ceci, on applique h à la valeur 1, 
-                               -- comme si h était une fonction et qu'on calculait h(1)
+example : ∀ a:ℝ, (∀x:ℝ,a ≤ x^2 -2*x) →  a ≤ -1 := 
+  λ a:ℝ ↦                       -- introduction de ∀
+    λ h:  (∀x:ℝ,a ≤ x^2 -2*x) ↦ -- introduction de → 
+      calc                   -- si h commence par ∀x...
+                              -- alors la l'assertion qui suit (a ≤ x^2 -2*x) est vraie pour toute valeur de x,
+                              -- en particulier pour x=1.
+                              -- Pour obtienir une preuve de ceci, on applique h à la valeur 1, 
+                              -- comme si h était une fonction et qu'on calculait h(1)
 
-                               -- ceci s'appelle l'élimination de ∀   :
-          a ≤ 1^2-2*1 := h 1   -- on applique h à 1
-          _ = -1      := by norm_num
+                              -- ceci s'appelle l'élimination de ∀   :
+        a ≤ 1^2-2*1 := h 1   -- on applique h à 1
+        _ = -1      := by norm_num
+
 
 -- Exercice 6.1
-example : ∀ a:ℝ, (∀x:ℝ,a * x^2 = 0) →  a = 0 :=  sorry
+example : ∀ a:ℝ, (∀x:ℝ,a * x^2 = 0) →  a = 0 :=  
+  λ a:ℝ ↦
+    λ h:  (∀x:ℝ,a * x^2 = 0) ↦
+      calc
+        a = a*1^2   := by ring_nf
+        _ = 0       := h 1          -- on applique h à 1
+
+example : ∀ a:ℝ, (∀x:ℝ,a * x^2 = 0) →  a = 0 :=  
+  soit a:ℝ,
+    supposons h:  (∀x:ℝ,a * x^2 = 0),
+      calc
+        a = a*1^2   := by ring_nf
+        _ = 0       := h 1          -- on applique h à 1
 
 
 ------------------------------------------------------------------
@@ -312,11 +506,33 @@ example : ∀ a b:ℝ , (∀x:ℝ,a * x + b = 0) →  (a = 0 ∧ b = 0) :=
 
 -- Exercice 7.1 
 example : ∀ a b:ℝ , (∀x:ℝ,a * x^2 - b*x = 0) →  (a = 0 ∧ b = 0) :=  
-  sorry
+  λ a b:ℝ ↦ 
+    λ h:(∀x:ℝ,a * x^2 - b*x = 0) ↦
+      have h1  : a-b=0 :=
+        calc
+          a -b = a*1^2 -b*1 := by ring_nf
+          _    = 0          := h 1
 
--- indication : vous pouvez essayer de prouver les résultats intermediaires :
---  a-b=0      puis         a+b=0
--- puis observez que a = ((a+b)+(a-b))/2 
+      have hm1  : a+b =0 :=
+        calc
+          a+b = a*(-1)^2 -b*(-1) := by ring_nf
+          _   = 0                := h (-1)
+
+
+      have ha0 : a=0 := 
+        calc
+          a = ((a+b)+(a-b))/2 := by ring_nf
+          _ = (0+0)/2         := by rw[h1,hm1]
+          _ = 0               := by norm_num
+
+      have hb0 :  b=0 :=
+        calc            
+          b = ((a+b)-(a-b))/2 := by ring_nf
+          _ = (0-0)/2         := by rw[h1,hm1]
+          _ = 0               := by norm_num
+
+      And.intro ha0 hb0 
+
 
 
 
@@ -372,7 +588,6 @@ example : ∀ (a b:ℝ), a+b-a = b := λ a b:ℝ ↦  add_sub_cancel' a b  -- (i
 -- écrire son énoncé, puis 'by exact?' en guise de preuve
 -- Lean fait une proposition. 
 -- Si la réponse commence par exact, on enlève le exact et on récupère le nom du théorème qu'on peut vérifier avec #check
--- Si la réponse commence par refine, c'est surement qu'il n'a pas trouvé de théorème répondant exactement à la question
 
 -- finalement voici la preuve:
 
@@ -393,10 +608,46 @@ example : ∀ x:ℝ, 3*x+4=2 → x=-2/3
 
 -- Exercice 8.1 à faire sans les tactiques ring_nf ni rw
 example : ∀ x:ℝ, 2*x+11=6 → x = -5/2 := 
-  sorry
+  λ x:ℝ ↦ 
+    λ h:2*x+11=6 ↦ 
+      calc
+        x = (x*2)/2       := (mul_div_cancel x (by norm_num : (2:ℝ) ≠ 0)).symm
+        _ = (2*x)/2       := congr_arg (fun z ↦ z/2)      (mul_comm x 2)
+        _ = (2*x+11-11)/2 := congr_arg (fun z ↦ z/2)      (add_sub_cancel (2*x) 11).symm
+        _ = (6  -11)/2    := congr_arg (fun z ↦ (z-11)/2) h
+        _ = -5/2          := by norm_num
+
 
 -- Exercice 8.2 à faire sans les tactiques ring_nf ni rw
+
+-- Lemmes utilisés:
+#check one_mul
+#check sub_mul
+#check add_zero
+#check add_sub
+#check sub_add_eq_add_sub
+#check sub_add_eq_sub_sub
+#check sub_eq_add_neg
+#check sub_self
+
 example  : ∀ c:ℚ,  4*c+1 =3*c-2 →  c = -3 :=
-  sorry
+  λ  c:ℚ ↦ 
+    λ  h:  4*c+1 =3*c-2 ↦ 
+      calc
+        c = 1*c                    := (one_mul c).symm
+        _ = (4-3)*c                := congr_arg (fun z ↦ z*c) (by norm_num: ((1:ℚ)=4-3))
+        _ = 4*c-3*c                := sub_mul 4 3 c
+        _ = 4*c-3*c+0              := (add_zero _).symm
+        _ = 4*c-3*c+(1-((-2)+3))   := congr_arg (fun z ↦ 4*c-3*c+z) (by norm_num: (0:ℚ) = 1-((-2)+3))
+        _ = 4*c-3*c+1-((-2)+3)     := add_sub (4*c-3*c) 1 ((-2)+3)
+        _ = 4*c+1-3*c-((-2)+3)     := congr_arg (fun z ↦ z-((-2)+3) ) (sub_add_eq_add_sub (4 * c) (3 * c) 1)
+        _ = 4*c+1-3*c-(-2)-3       := sub_add_eq_sub_sub (4*c+1-3*c) (-2) 3
+        _ = 4*c+1-(3*c+(-2))-3     := congr_arg (fun z ↦ z-3)   (sub_add_eq_sub_sub (4*c+1) (3*c) (-2)).symm
+        _ = 4*c+1-(3*c-2)-3        := congr_arg (fun z ↦ 4*c+1-z-3)  (sub_eq_add_neg (3*c) 2).symm
+        
+        _ =  (3*c-2)-(3*c-2)  - 3  := congr_arg (fun z ↦ z - (3*c-2) -3)  h
+
+        _ =  0  - 3                := congr_arg (fun z ↦ z -  3)  (sub_self (3*c-2))
+        _ = -3                     := by norm_num
 
 
