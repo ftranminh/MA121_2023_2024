@@ -690,7 +690,7 @@ end solution
 example : ∀ (f: E→ F) (g:F→ G) (C: Set G), image_reciproque f (image_reciproque g C) = image_reciproque (g ∘ f) C := sorry
 
 namespace solution
-  example : ∀ (f: E→ F) (g:F→ G) (C: Set G), image_reciproque f (image_reciproque g C) = image_reciproque (g ∘ f) C := sorry
+  example : ∀ (f: E→ F) (g:F→ G) (C: Set G), image_reciproque f (image_reciproque g C) = image_reciproque (g ∘ f) C := 
     λ (f: E→ F) (g:F→ G) (C: Set G) ↦
       Set.ext (λ x:E ↦ Iff.intro
         (
